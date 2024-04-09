@@ -1,22 +1,17 @@
 package org.acme.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.quarkus.test.TestTransaction;
+import io.quarkus.test.junit.QuarkusTest;
+import org.acme.domain.Fruit;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.acme.ContainersConfig;
-import org.acme.domain.Fruit;
-import org.junit.jupiter.api.Test;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-
-@SpringBootTest
-@Transactional
-@Import(ContainersConfig.class)
+@QuarkusTest
+@TestTransaction
 class FruitRepositoryTests {
 	@Autowired
 	FruitRepository fruitRepository;
