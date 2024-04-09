@@ -5,10 +5,10 @@
 
 # Example usage
 # 1) Run the java app 10 times
-# $ ./1strequest.sh "java -jar target/chapter-4-spring-data-jpa-1.0.0-SNAPSHOT.jar" 10
+# $ ./1strequest.sh "java -jar target/spring-to-quarkus-1.0.0-SNAPSHOT.jar" 10
 #
 # 2) Run the native app 10 times
-# $ ./1strequest.sh target/chapter-4-spring-data-jpa 10
+# $ ./1strequest.sh target/spring-to-quarkus 10
 
 COMMAND=$1
 NUM_ITERATIONS=1
@@ -24,8 +24,8 @@ fi
 for (( i=0; i<$NUM_ITERATIONS; i++))
 do
   # drop OS page cache entries, inode etc etc
-  sync && sudo purge
-  ts=$(gdate +%s%N)
+#  sync && sudo purge
+  ts=$(date +%s%N)
   $COMMAND &
   CURRENT_PID=$!
 
@@ -35,7 +35,7 @@ do
     :
   done
 
-  TTFR=$((($(gdate +%s%N) - $ts)/1000000))
+  TTFR=$((($(date +%s%N) - $ts)/1000000))
   RSS=`ps -o rss= -p $CURRENT_PID | sed 's/^ *//g'`
   kill $CURRENT_PID
   wait $CURRENT_PID 2> /dev/null

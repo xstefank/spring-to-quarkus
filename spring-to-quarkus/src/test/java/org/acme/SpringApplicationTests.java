@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootTest
 @Import(ContainersConfig.class)
-class Chapter4SpringDataJpaApplicationTests {
+class SpringApplicationTests {
 	@Test
 	void contextLoads() {
 	}
