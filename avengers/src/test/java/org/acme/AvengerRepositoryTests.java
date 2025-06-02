@@ -1,21 +1,19 @@
 package org.acme;
 
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@QuarkusTest
 @Transactional
-@Import(ContainersConfig.class)
 public class AvengerRepositoryTests {
 
-    @Autowired
+    @Inject
     AvengerRepository avengerRepository;
 
     @Test

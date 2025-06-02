@@ -1,33 +1,22 @@
 package org.acme;
 
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Import(ContainersConfig.class)
+@QuarkusTest
 public class AvengerControllerTests {
 
-    @Autowired
-    MockMvc mockMvc;
 
-    @MockitoBean
+    @InjectMock
     AvengerRepository avengerRepository;
 
     @Test
@@ -35,12 +24,20 @@ public class AvengerControllerTests {
         Mockito.when(avengerRepository.findAll())
             .thenReturn(List.of(new Avenger("Falcon", "Sam Wilson", true)));
 
-        mockMvc.perform(get("/avengers"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$[0].name").value("Falcon"))
-            .andExpect(jsonPath("$[0].civilname").value("Sam Wilson"))
-            .andExpect(jsonPath("$[0].snapped").value(true));
+        given().get("/avengers")
+            .then()
+            .statusCode(200)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body("[0].name", equalTo("Falcon"))
+            .body("[0].civilname", equalTo("Sam Wilson"))
+            .body("[0].snapped", equalTo(true));
+
+//        mockMvc.perform(get("/avengers"))
+//            .andExpect(status().isOk())
+//            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//            .andExpect(jsonPath("$[0].name").value("Falcon"))
+//            .andExpect(jsonPath("$[0].civilname").value("Sam Wilson"))
+//            .andExpect(jsonPath("$[0].snapped").value(true));
 
         Mockito.verify(avengerRepository, Mockito.times(1)).findAll();
         Mockito.verifyNoMoreInteractions(avengerRepository);
@@ -51,12 +48,20 @@ public class AvengerControllerTests {
         Mockito.when(avengerRepository.findByName("Falcon"))
             .thenReturn(Optional.of(new Avenger("Falcon", "Sam Wilson", true)));
 
-        mockMvc.perform(get("/avengers/Falcon"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.name").value("Falcon"))
-            .andExpect(jsonPath("$.civilname").value("Sam Wilson"))
-            .andExpect(jsonPath("$.snapped").value(true));
+        given().get("/avengers/Falcon")
+            .then()
+            .statusCode(200)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body("name", equalTo("Falcon"))
+            .body("civilname", equalTo("Sam Wilson"))
+            .body("snapped", equalTo(true));
+
+//        mockMvc.perform(get("/avengers/Falcon"))
+//            .andExpect(status().isOk())
+//            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//            .andExpect(jsonPath("$.name").value("Falcon"))
+//            .andExpect(jsonPath("$.civilname").value("Sam Wilson"))
+//            .andExpect(jsonPath("$.snapped").value(true));
 
         Mockito.verify(avengerRepository, Mockito.times(1)).findByName("Falcon");
         Mockito.verifyNoMoreInteractions(avengerRepository);
@@ -67,14 +72,25 @@ public class AvengerControllerTests {
         Mockito.when(avengerRepository.save(Mockito.any(Avenger.class)))
             .thenReturn(new Avenger("Falcon", "Sam Wilson", true));
 
-        mockMvc.perform(post("/avengers")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Falcon\", \"civilname\":\"Sam Wilson\", \"snapped\":true}"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("name").value("Falcon"))
-            .andExpect(jsonPath("civilname").value("Sam Wilson"))
-            .andExpect(jsonPath("snapped").value(true));
+        given()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body("{\"name\":\"Falcon\", \"civilname\":\"Sam Wilson\", \"snapped\":true}")
+            .post("/avengers")
+            .then()
+            .statusCode(200)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body("name", equalTo("Falcon"))
+            .body("civilname", equalTo("Sam Wilson"))
+            .body("snapped", equalTo(true));
+
+//        mockMvc.perform(post("/avengers")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content("{\"name\":\"Falcon\", \"civilname\":\"Sam Wilson\", \"snapped\":true}"))
+//            .andExpect(status().isOk())
+//            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//            .andExpect(jsonPath("name").value("Falcon"))
+//            .andExpect(jsonPath("civilname").value("Sam Wilson"))
+//            .andExpect(jsonPath("snapped").value(true));
 
         Mockito.verify(avengerRepository, Mockito.times(1)).save(Mockito.any(Avenger.class));
         Mockito.verifyNoMoreInteractions(avengerRepository);
