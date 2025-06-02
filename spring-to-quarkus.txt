@@ -1,0 +1,25 @@
+Spring Boot:
+
+TTFR: 
+RSS: 
+
+===================
+Spring with AOT:
+
+TTFR:
+RSS:
+
+===================
+Native Spring Boot:
+
+Build time:
+Build RSS: 
+Binary size: 
+
+TTFR: 
+RSS:
+
+
+===================
+
+
