@@ -21,5 +21,20 @@ RSS:
 
 
 ===================
+Quarkus:
+
+TTFR:
+RSS:
+
+
+===================
+Native Quarkus:
+
+Build time:
+Build RSS:
+Binary size:
+
+TTFR:
+RSS:
 
 
